@@ -1,7 +1,8 @@
 import React from "react";
+import { ImageObject } from "../page";
 
 
-const ImagePreview = ({src, heightImg}:{src: string, heightImg: any}) => {
+const ImagePreview = ({src, heightImg}:{src: ImageObject, heightImg: any}) => {
 
     const style = {
         height: heightImg
@@ -10,7 +11,7 @@ const ImagePreview = ({src, heightImg}:{src: string, heightImg: any}) => {
     return (
         <div>
             <img
-                src={src} alt={"image"} style={style} />
+                src={src.url} alt={src.title} style={style} />
         </div>
     );
 };

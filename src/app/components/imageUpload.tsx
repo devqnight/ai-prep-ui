@@ -1,41 +1,10 @@
 import React, { ButtonHTMLAttributes, DetailedHTMLProps, useRef, useState } from "react";
 import { Button } from "./button";
 import Resizer from 'react-image-file-resizer';
+import { ImageObject } from "../page";
+import { cropImage64 } from "../services/resize";
 
-function image64ToImage(base64: any) {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.src = base64;
-        img.onload = () => {
-            resolve(img);
-        };
-        img.onerror = () => {
-            reject(img);
-        };
-    });
-}
-
-function cropImage(image: any, x: any, y: any, newWidth: any, newHeight: any) {
-    const canvas = document.createElement("canvas");
-    canvas.width = newWidth;
-    canvas.height = newHeight;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) {
-        return;
-    }
-
-    ctx.drawImage(image, x, y, newWidth, newHeight, 0, 0, newWidth, newHeight);
-    return canvas.toDataURL("image/jpeg");
-}
-
-async function cropImage64(base64: any, x: any, y: any, newWidth: any, newHeight: any) {
-    const img = await image64ToImage(base64);
-    return cropImage(img, x, y, newWidth, newHeight);
-}
-
-
-
-const Uploader = ({ setIsLoading, setImageURLs, setCounter, counter, urls }: { setIsLoading: Function, setImageURLs: Function, setCounter: Function, counter: number, urls: string[] }) => {
+const Uploader = ({ setIsLoading, setImageURLs, setCounter, counter, urls }: { setIsLoading: Function, setImageURLs: Function, setCounter: Function, counter: number, urls: ImageObject[] }) => {
     const fileUploadRef: any = useRef();
 
     const handleImageUpload = (event: React.FormEvent<HTMLFormElement>) => {
@@ -50,6 +19,7 @@ const Uploader = ({ setIsLoading, setImageURLs, setCounter, counter, urls }: { s
         await Promise.all(
             files.map(async (file: any) => {
                 const uploadedFile = file;
+                const title = file.name;
                 const objectImage = URL.createObjectURL(uploadedFile);
                 const img = new Image();
                 img.onload = async () => {
@@ -64,7 +34,7 @@ const Uploader = ({ setIsLoading, setImageURLs, setCounter, counter, urls }: { s
                         0,
                         async (uri) => {
                             const croppedImage = await cropImage64(uri, 0, 0, 1024, 1024);
-                            setImageURLs((urls: string[]) => [...urls, croppedImage]);
+                            setImageURLs((urls: ImageObject[]) => [...urls, {url: croppedImage, title: title, desc: ""}]);
                             if (counter === urls.length) {
                                 setIsLoading(false);
                             }
