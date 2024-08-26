@@ -2,13 +2,11 @@ import React from "react";
 import { ImageObject } from "../page";
 
 
-const ImageLocal = ({src}:{src: ImageObject}) => {
+const ImageLocal = ({src, id}:{src: ImageObject, id:string}) => {
 
     return (
-        <div style={{width:512, height:"auto"}}>
-            <img
-                src={src.url} alt={src.title} />
-        </div>
+            <img style={{maxWidth:"100%", maxHeight:"20%", height:"auto"}}
+                src={src.url} alt={src.title} id={id} />
     );
 };
 

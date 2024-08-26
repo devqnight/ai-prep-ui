@@ -24,9 +24,9 @@ export default function Home() {
 
   const [counter, setCounter] = useState(0);
 
-  const addFinalImage = (img: ImageObject) => {
+  const addFinalImage = (img: ImageObject, oldUri: string) => {
     setFinalImages((imgs) => [...imgs, img]);
-    setImageURL(imageURL.filter(a => a.url !== img.url));
+    setImageURL(imageURL.filter(a => a.url !== oldUri));
   }
 
   return (

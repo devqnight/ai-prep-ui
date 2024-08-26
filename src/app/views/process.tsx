@@ -24,7 +24,7 @@ export default function Process(
 {
     return (
         <div >
-            {imageURLs.length > 0 && 
+            {(imageURLs.length > 0 || finalImages.length > 0) && 
                 <ProcessingPage 
                     imageURLs={imageURLs} 
                     setIsLoading={setIsLoading} 

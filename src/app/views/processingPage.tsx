@@ -5,11 +5,12 @@ import { ImageObject } from "../page";
 import { FinalItemList } from "./finalItemList";
 import { Button } from "../components/button";
 import { zip } from "../services/download";
+import { Uploader } from "../components/imageUpload";
 
 export default function ProcessingPage(
-    {setIsLoading, setImageURLs, imageURLs, setCounter, setFinalImages, finalImages}
+    { setIsLoading, setImageURLs, imageURLs, setCounter, setFinalImages, finalImages }
         :
-    {setIsLoading:Function, setImageURLs:Function, imageURLs: ImageObject[], setCounter: Function, setFinalImages: Function, finalImages: ImageObject[]}
+        { setIsLoading: Function, setImageURLs: Function, imageURLs: ImageObject[], setCounter: Function, setFinalImages: Function, finalImages: ImageObject[] }
 ) {
 
     const [selected, setSelected] = useState<ImageObject>(imageURLs[0]);
@@ -25,16 +26,18 @@ export default function ProcessingPage(
     }, [imageURLs]);
 
     return (
-        <div className="flex flex-row items-center justify-between align-top max-h-min">
-            <div  className="flex flex-col items-center justify-between p-12" style={{width: "30%", maxHeight:"1000px"}}>
-                <ItemList list={imageURLs} onClick={setItemSelected} selected={selected}  />
+        <div className="flex flex-row items-start justify-between align-top max-h-min">
+            <div className="pt-12 min-h-screen" style={{ width: "30%", maxHeight: "1000px" }}>
+                <Uploader setIsLoading={setIsLoading} setImageURLs={setImageURLs} setCounter={setCounter} counter={0} urls={imageURLs} />
+                <span className="p-5"></span>
+                <ItemList list={imageURLs} onClick={setItemSelected} selected={selected} />
             </div>
-            <div  className="flex flex-col items-center align-top justify-between p-12" style={{width: "40%", minHeight:"600px", maxHeight: "1000px"}}>
-                <Edit imageURL={selected} setFinalImages={setFinalImages} />
-            </div>    
-            <div  className="flex flex-col items-center justify-between p-12" style={{width: "30%", maxHeight:"1000px"}}>
-                <Button onPressButton={async () => await zip(finalImages)} enabled={true} text={"Download All"} type={"button"}  />
-                    <span className="p-5"></span>
+            <div style={{ width: "40%", height: "100%" }} className="p-4">
+                <Edit imageObject={selected} setFinalImages={setFinalImages} />
+            </div>
+            <div className="flex flex-col items-center justify-start p-12 min-h-screen" style={{ width: "30%", maxHeight: "1000px" }}>
+                <Button onPressButton={async () => await zip(finalImages)} enabled={finalImages.length > 0} text={"Download All"} type={"button"} />
+                <span className="p-5"></span>
                 <FinalItemList list={finalImages} />
             </div>
         </div>

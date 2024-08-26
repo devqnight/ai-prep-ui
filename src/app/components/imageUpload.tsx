@@ -2,7 +2,7 @@ import React, { ButtonHTMLAttributes, DetailedHTMLProps, useRef, useState } from
 import { Button } from "./button";
 import Resizer from 'react-image-file-resizer';
 import { ImageObject } from "../page";
-import { cropImage64 } from "../services/resize";
+import { blobToBase64, cropImage64 } from "../services/imageFunctions";
 
 const Uploader = ({ setIsLoading, setImageURLs, setCounter, counter, urls }: { setIsLoading: Function, setImageURLs: Function, setCounter: Function, counter: number, urls: ImageObject[] }) => {
     const fileUploadRef: any = useRef();
@@ -20,30 +20,11 @@ const Uploader = ({ setIsLoading, setImageURLs, setCounter, counter, urls }: { s
             files.map(async (file: any) => {
                 const uploadedFile = file;
                 const title = file.name;
-                const objectImage = URL.createObjectURL(uploadedFile);
-                const img = new Image();
-                img.onload = async () => {
-                    const imgHeight = img.height < img.width ? 1024 : img.height;
-                    const imgWidth = img.height > img.width ? 1024 : img.width;
-                    Resizer.imageFileResizer(
-                        uploadedFile,
-                        imgWidth,
-                        imgHeight,
-                        "JPEG",
-                        100,
-                        0,
-                        async (uri) => {
-                            const croppedImage = await cropImage64(uri, 0, 0, 1024, 1024);
-                            setImageURLs((urls: ImageObject[]) => [...urls, {url: croppedImage, title: title, desc: ""}]);
-                            if (counter === urls.length) {
-                                setIsLoading(false);
-                            }
-                        },
-                        "base64"
-                    );
+                const base64 = await blobToBase64(uploadedFile);
+                setImageURLs((urls: ImageObject[]) => [...urls, {url: base64, title: title, desc: ""}]);
+                if (counter === urls.length) {
+                    setIsLoading(false);
                 }
-
-                img.src = objectImage;
             })
         );
     }
