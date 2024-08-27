@@ -70,11 +70,11 @@ export default function Edit(props: { imageObject: ImageObject, setFinalImages: 
 
     const validateEdit = () => {
         // only do cropping in here
-        console.log(resizedImage)
+        //console.log(resizedImage)
         const toCrop: ImageObject = { ...resizedImage } as ImageObject;
-        console.log(toCrop)
+        //console.log(toCrop)
         const imageElement: HTMLImageElement = document.getElementById(toCrop.title);
-        console.log(imageElement)
+        //console.log(imageElement)
         const cropped: ImageObject = cropImageNow(imageElement, toCrop, cropPx, window, maxSize);
         props.setFinalImages({ ...cropped, title: title, desc: desc }, props.imageObject.url);
         resetEdit();
@@ -86,7 +86,11 @@ export default function Edit(props: { imageObject: ImageObject, setFinalImages: 
         setTitle("");
     }
 
-
+    useEffect(() => {
+        if (props.imageObject.title !== resizedImage.title) {
+            resetEdit();
+        }
+    });
     //implement auto resizing for new images when previous is saved and toggled is checked
 
     return (
